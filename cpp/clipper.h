@@ -16,7 +16,9 @@
 #include <vector>
 #include <queue>
 #include <stdexcept>
-#include <cstdlib>
+//#include <cstdlib>
+#include <limits>
+#include <cfloat>
 
 namespace clipperlib {
 
@@ -31,7 +33,7 @@ enum FillRule { frEvenOdd, frNonZero, frPositive, frNegative };
 struct Point64 {
   int64_t x;
   int64_t y;
-  Point64(int64_t x = 0, int64_t y = 0): x(x), y(y) {};
+  Point64(int64_t x = 0, int64_t y = 0): x(x), y(y) {}
 
   friend inline bool operator== (const Point64 &a, const Point64 &b)
   {
@@ -61,7 +63,7 @@ class PolyPath
 	  std::vector< PolyPath* > childs_;
   public:
 	  PolyPath(PolyPath *parent, const Path &path);
-	  virtual ~PolyPath(){};
+	  virtual ~PolyPath(){}
     PolyPath &AddChild(const Path &path);
 	  PolyPath& GetChild(unsigned index);
     int ChildCount() const;
@@ -161,9 +163,9 @@ class Clipper {
     void SetWindingLeftEdgeOpen(Active &e);
     void InsertEdgeIntoAEL(Active &edge, Active *startEdge);
     virtual void InsertLocalMinimaIntoAEL(int64_t bot_y);
-    inline void Clipper::PushHorz(Active &e);
-    inline bool Clipper::PopHorz(Active *&e);
-    inline OutRec* Clipper::GetOwner(const Active *e);
+    inline void PushHorz(Active &e);
+    inline bool PopHorz(Active *&e);
+    inline OutRec* GetOwner(const Active *e);
     void JoinOutrecPaths(Active &e1, Active &e2);
     inline void TerminateHotOpen(Active &e);
     inline void StartOpenPath(Active &e, const Point64 pt);
@@ -211,6 +213,7 @@ class Clipper {
 //------------------------------------------------------------------------------
 
 #define CLIPPER_HORIZONTAL (-DBL_MAX)
+//#define CLIPPER_HORIZONTAL (std::numeric_limits<double>::min())
 
 class ClipperException : public std::exception
 {
